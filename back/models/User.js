@@ -4,8 +4,28 @@ const UserSchema = mongoose.Schema({
     name:{type:String,required:true},
     email:{type:String,Unique:true},
     password:{type:String},
-    isAdmin:{type:Boolean,default:false}
+    isAdmin:{type:Boolean,default:false} 
 },{timestamp:true})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

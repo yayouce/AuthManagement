@@ -1,8 +1,11 @@
 const http = require('http')
 const app = require('./App')
 
+const env= require('dotenv')
 require("./db")
 
+
+env.config();
 
 const server = http.createServer(app);
 

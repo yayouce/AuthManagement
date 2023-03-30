@@ -24,28 +24,31 @@ userDoc.save()
 
 const SigninController=async(req,res,next)=> {
 User.findOne({email:req.body.email}).then(user=>{
-    if(!user){
+    if(!user || !user.password){
         res.status(401).json("utilisateur non trouvé!!!!")
+        next()
     }
-    
+
     bcrypt.compare(req.body.password,user.password)
     .then(valid=>{
         if(!valid){
-            res.status(500).json("mauvais mot de pass")
+            res.status(406).json('mot de pass incorrect!!')
+            next()
         }
 
       const tokenUser = jwt.sign(
         {id:user._id,
         isAdmin:user.isAdmin
         },
-process.env.JWTSECRET,{expiresIn:"2d"}
+       process.env.JWTSECRET,{expiresIn:"2d"}
       )
       //set le cookie at http only  je passe le token générer
       
       res.cookie('token',tokenUser,{httpOnly:true,maxAge:86400000,signed:true})//2 jours
-      res.status(201).json({...user._doc,tokenUser})
+      res.status(202).json('succès!!!')
+      next()
 
-        })
+    })
         .catch(err=>console.log(err))
 
 
@@ -54,9 +57,25 @@ process.env.JWTSECRET,{expiresIn:"2d"}
 
 }
 
+const LogoutController = (req,res,next)=>{
+const cookie = req.headers.cookie
+if(cookie){
+res.cookie('token', '', { expires: new Date(0) }).json('cookie mit à jour');
+
+}
+else{
+    res.status(404).json("cookie non trouvé!!!")
+}
+
+
+ 
+   
+  }
+  
 
 
 
 
 
-module.exports = {SignupController,SigninController}
+
+module.exports = {SignupController,SigninController,LogoutController}
