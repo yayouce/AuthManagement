@@ -1,4 +1,7 @@
 const {SignupController, SigninController, LogoutController } = require('../controllers/UserController')
+const {authenticateToken,authenticateTokenAndAdmin}= require('../middleware/AuthorizeToken');
+
+
 
 const router = require('express').Router()
 router.get('/get',(req,res)=>{
@@ -10,7 +13,7 @@ JWTSECRET:process.env.JWTSECRET
     res.status(200).json(user)
 })
 
-router.get("/",(req,res)=>res.send('<h1>HOME PAGE</h1>'))
+router.get("/",authenticateToken,(req,res)=>res.json(req.user))
 router.post('/signup',SignupController)
 router.post('/login',SigninController)
 router.get('/logout',LogoutController)

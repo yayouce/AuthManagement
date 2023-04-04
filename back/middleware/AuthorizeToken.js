@@ -3,20 +3,31 @@ const jwt = require("jsonwebtoken")
 
 const authenticateToken=(req,res,next)=>{
 const authHearder= req.headers["authorization"]
-if(authHearder){
-    const token=authHearder.split(" ")[1]
+const token=authHearder && authHearder.split(" ")[1]
+if(token==null) return res.sendStatus(401)
 
-if(!token){
-res.status(401).json('token non existent')
-}
 jwt.verify(token,process.env.JWTSECRET,(err,user)=>{
-    if(err) throw err;
-
-req.user= user;
-
+    if(err) return res.sendStatus(403);
+    req.user=user;
 next();
-
-   
 })
 }
-}
+
+
+// const authenticateTokenAndAdmin=(req,res,next)=>{
+
+// authenticateToken(req,res,(err)=>{
+// console.log(res)
+// if(isAdmin===true){
+//     return res.sendStatus(403)
+// }
+
+// next()
+
+// })
+
+// }
+
+
+
+module.exports= {authenticateToken,authenticateTokenAndAdmin}

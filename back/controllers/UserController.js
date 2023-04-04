@@ -17,10 +17,10 @@ const userDoc =await User.create( {
 })
 userDoc.save()
 .then(user=>{res.status(201).json(user)})
-.catch(err=>res.status(500).json("err"))
+.catch(err=>res.sendStatus(500))
 
 }
- 
+
 
 const SigninController=async(req,res,next)=> {
 User.findOne({email:req.body.email}).then(user=>{
@@ -45,7 +45,8 @@ User.findOne({email:req.body.email}).then(user=>{
       //set le cookie at http only  je passe le token générer
       
       res.cookie('token',tokenUser,{httpOnly:true,maxAge:86400000,signed:true})//2 jours
-      res.status(202).json('succès!!!')
+      
+      res.status(202).json(tokenUser)
       next()
 
     })
@@ -58,7 +59,7 @@ User.findOne({email:req.body.email}).then(user=>{
 }
 
 const LogoutController = (req,res,next)=>{
-const cookie = req.headers.cookie
+
 if(cookie){
 res.cookie('token', '', { expires: new Date(0) }).json('cookie mit à jour');
 
